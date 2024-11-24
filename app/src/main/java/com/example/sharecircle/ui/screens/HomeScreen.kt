@@ -1,12 +1,13 @@
 package com.example.sharecircle.ui.screens
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -82,7 +82,7 @@ fun HomeScreen(viewModel: ShareCircleViewModel = viewModel(),
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .weight(3.2f)
                 ) {
                     items(uiState.expenses.size) { index ->
                         Card(
@@ -91,15 +91,36 @@ fun HomeScreen(viewModel: ShareCircleViewModel = viewModel(),
                                 .padding(3.dp),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text(
-                                text = "Expense: ${uiState.expenses[index]}",
+                            Row(
                                 modifier = Modifier
-                                    .padding(16.dp)
-                                    .background(Color.DarkGray)
-                            )
+                                    .fillMaxWidth()
+                                    .padding(10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Expense",
+                                )
+
+                                Text(
+                                    text = "${uiState.expenses[index]}€"
+                                )
+                            }
                         }
                     }
                 }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(30.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .wrapContentHeight(),
+                    text = "Total: ${uiState.expensesSum}€"
+                )
             }
         }
     }
