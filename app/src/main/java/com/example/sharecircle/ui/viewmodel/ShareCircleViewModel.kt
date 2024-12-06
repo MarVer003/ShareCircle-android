@@ -1,21 +1,21 @@
 package com.example.sharecircle.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.sharecircle.ui.screens.HomeScreenUIState
+import com.example.sharecircle.ui.screens.ExpenseViewScreenUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class ShareCircleViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeScreenUIState())
-    val uiState: StateFlow<HomeScreenUIState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ExpenseViewScreenUIState())
+    val uiState: StateFlow<ExpenseViewScreenUIState> = _uiState.asStateFlow()
 
     init {
-        resetExpensesAndBackPayements()
+        loadInitialData()
     }
 
-    private fun resetExpensesAndBackPayements() {
-        _uiState.value = HomeScreenUIState()
+    private fun loadInitialData() {
+        _uiState.value = ExpenseViewScreenUIState()
     }
 }

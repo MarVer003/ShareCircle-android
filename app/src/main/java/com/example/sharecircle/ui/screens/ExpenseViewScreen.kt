@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.sharecircle.ShareCircleScreen
 import com.example.sharecircle.ui.viewmodel.ShareCircleViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +46,7 @@ fun HomeScreen(viewModel: ShareCircleViewModel = viewModel(),
     val uiState = viewModel.uiState.collectAsState().value
 
     var showMenu by remember { mutableStateOf(false) }
-    val tag = "ShareCircleHomeLayout"
+    val tag = "ShareCircleExpenseViewLayout"
     val configuration = LocalConfiguration.current
 
     val screenHeight = configuration.screenHeightDp.dp
@@ -134,7 +135,7 @@ fun HomeScreen(viewModel: ShareCircleViewModel = viewModel(),
     ) {
         DropdownMenuItem(
             text = { Text("Add Expense") },
-            onClick = { Log.d(tag, "Add Expense clicked") }
+            onClick = { Log.d(tag, "Add Expense clicked"); navController.navigate(ShareCircleScreen.ExpenseCreate.name) }
         )
         DropdownMenuItem(
             text = { Text("Back-payment") },
