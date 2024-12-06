@@ -1,4 +1,4 @@
-package com.example.sharecircle.domain.model
+package com.example.sharecircle.data
 
 import java.time.Instant
 

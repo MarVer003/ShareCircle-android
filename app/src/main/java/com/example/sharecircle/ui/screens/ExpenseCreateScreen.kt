@@ -14,7 +14,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.sharecircle.domain.model.Expense
+import com.example.sharecircle.data.Expense
 import com.example.sharecircle.ui.viewmodel.ShareCircleViewModel
 import java.time.Instant
 
