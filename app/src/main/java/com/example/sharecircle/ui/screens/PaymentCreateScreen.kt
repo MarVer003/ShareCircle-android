@@ -19,24 +19,30 @@ import com.example.sharecircle.data.UserEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpenseCreateScreen(
+fun PaymentCreateScreen(
     viewModel: ShareCircleViewModel = viewModel(),
     navController: NavController
 ) {
+
     val uiState = viewModel.uiState.collectAsState().value
-    val expense = uiState.expenseInView
-    val valueAmount = expense?.amount ?: ""
+    val payment = uiState.paymentInView
+    val valueAmount = payment?.amount ?: ""
 
     var amount by remember { mutableStateOf(valueAmount.toString()) }
-    var title by remember { mutableStateOf(expense?.title ?: "") }
 
     var expandedPayer by remember { mutableStateOf(false) }
     var selectedPayer by remember { mutableStateOf<UserEntity?>(
-        expense?.let { uiState.users.find { it.id == expense.payerId } }) }
+        payment?.let { uiState.users.find { it.id == payment.payerId } }
+    ) }
+    var expandedPayee by remember { mutableStateOf(false) }
+    var selectedPayee by remember { mutableStateOf<UserEntity?>(
+        payment?.let { uiState.users.find { it.id == payment.payeeId } }
+    ) }
 
     var payerError by remember { mutableStateOf(false) }
-    var titleError by remember { mutableStateOf(false) }
+    var payeeError by remember { mutableStateOf(false) }
     var amountError by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
@@ -46,26 +52,6 @@ fun ExpenseCreateScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        OutlinedTextField(
-            value = title,
-            onValueChange = {
-                title = it
-                titleError = false // Clear error when title changes
-            },
-            label = { Text("Title") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-            isError = titleError
-        )
-        if (titleError) {
-            Text(
-                text = "Enter a title",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .align(Alignment.Start)
-            )
-        }
-
         OutlinedTextField(
             value = amount,
             onValueChange = {
@@ -78,11 +64,10 @@ fun ExpenseCreateScreen(
         )
         if (amountError) {
             Text(
-                text = "Enter an amount greater than 0",
+                text = "Amount must be greater than 0",
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .align(Alignment.Start)
+                modifier = Modifier.align(Alignment.Start)
             )
         }
 
@@ -117,11 +102,49 @@ fun ExpenseCreateScreen(
         }
         if (payerError) {
             Text(
-                text = "Select a payer",
+                text = "Please select a payer",
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .align(Alignment.Start)
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
+
+        // Payee Dropdown
+        ExposedDropdownMenuBox(
+            expanded = expandedPayee,
+            onExpandedChange = { expandedPayee = it }
+        ) {
+            OutlinedTextField(
+                value = selectedPayee?.username ?: "",
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Payee") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPayee) },
+                modifier = Modifier.menuAnchor(),
+                isError = payeeError
+            )
+            ExposedDropdownMenu(
+                expanded = expandedPayee,
+                onDismissRequest = { expandedPayee = false }
+            ) {
+                uiState.groupMembers.forEach { payee ->
+                    DropdownMenuItem(
+                        text = { Text(text = uiState.users.find { it.id == payee.userId }?.username ?: "Unknown") },
+                        onClick = {
+                            selectedPayee = uiState.users.find { it.id == payee.userId }
+                            expandedPayee = false
+                            payeeError = false
+                        }
+                    )
+                }
+            }
+        }
+        if (payeeError) {
+            Text(
+                text = "Please select a payee",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.Start)
             )
         }
 
@@ -129,26 +152,23 @@ fun ExpenseCreateScreen(
 
         Button(onClick = {
             val amountValue = amount.toDoubleOrNull()
-            if (title.isEmpty()) {
-                titleError = true
-            }
-            else if (amountValue == null || amountValue <= 0.0) {
-                amountError = true
-            }
-            else if (selectedPayer == null) {
+            if (selectedPayer == null) {
                 payerError = true
-            }
-            else {
-                if (expense == null) {
-                    viewModel.addExpense(amountValue, title, selectedPayer?.id!!)
+            } else if (selectedPayee == null) {
+                payeeError = true
+            } else if (amountValue == null || amountValue <= 0.0) {
+                amountError = true
+            } else {
+                if (payment == null) {
+                    viewModel.addPayment(amountValue, selectedPayer?.id.toString(), selectedPayee?.id.toString())
                 }
                 else {
-                    viewModel.updateExpense(expense.id, amountValue, title, selectedPayer?.id!!)
+                    viewModel.updatePayment(payment.id, amountValue, selectedPayer?.id.toString(), selectedPayee?.id.toString())
                 }
                 navController.popBackStack()
             }
         }) {
-            val text = if (expense == null) "Create Expense" else "Update Expense"
+            val text = if (payment == null) "Create Payment" else "Update Payment"
             Text(text)
         }
     }
