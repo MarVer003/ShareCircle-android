@@ -55,6 +55,14 @@ fun GroupDetailsScreen(
                                 expandedDotsMenu = false
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text("Currency Converter") },
+                            onClick = {
+                                viewModel.initCurrencyConverterRates()
+                                navController.navigate(ShareCircleScreen.CurrencyConverter.name)
+                                expandedDotsMenu = false
+                            }
+                        )
                     }
                 }
             )

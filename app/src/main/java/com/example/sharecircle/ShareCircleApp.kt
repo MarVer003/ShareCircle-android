@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.sharecircle.ui.screens.CurrencyConverterScreen
 import com.example.sharecircle.ui.screens.ExpenseCreateScreen
 import com.example.sharecircle.ui.screens.ExpenseDetailsScreen
 import com.example.sharecircle.ui.screens.HomeScreen
@@ -26,6 +27,7 @@ enum class ShareCircleScreen {
     ExpenseDetails,
     PaymentDetails,
     GroupDetails,
+    CurrencyConverter
 }
 
 @Composable
@@ -65,6 +67,9 @@ fun ShareCircleApp(viewModel: ShareCircleViewModel = viewModel(),
         composable(route = ShareCircleScreen.PaymentDetails.name + "/{paymentId}") { backStackEntry ->
             val paymentId = backStackEntry.arguments?.getString("paymentId")
             PaymentDetailsScreen(viewModel = viewModel, navController = navController, paymentId = paymentId.toString())
+        }
+        composable(route = ShareCircleScreen.CurrencyConverter.name) {
+            CurrencyConverterScreen(viewModel = viewModel, navController = navController)
         }
     }
 }

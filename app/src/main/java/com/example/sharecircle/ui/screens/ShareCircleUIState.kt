@@ -17,7 +17,8 @@ data class ShareCircleUIState (
     val paymentDetails: PaymentEntity = PaymentEntity("", 0.0, "", "", ""),
     val groupInView: GroupEntity? = null,
     val expenseInView: ExpenseEntity? = null,
-    val paymentInView: PaymentEntity? = null
-
+    val paymentInView: PaymentEntity? = null,
+    val exchangeRates: Map<String, Double> = emptyMap(),
+    val convertionResult: Double? = null
 )
 

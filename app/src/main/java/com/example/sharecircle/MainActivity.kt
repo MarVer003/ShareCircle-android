@@ -22,11 +22,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ShareCircleTheme {
-                /*Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ShareCircleLayout(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }*/
                 ShareCircleApp(viewModel = viewModel)
             }
         }

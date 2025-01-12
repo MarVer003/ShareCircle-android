@@ -31,7 +31,6 @@ class ShareCircleViewModel(private val repository: MyRepository) : ViewModel() {
 
     private fun loadInitialData() {
         viewModelScope.launch {
-            apiUsage()
             val users = repository.getUsers()
             val groups = repository.getGroups()
             _uiState.value = ShareCircleUIState(users = users, groups = groups)
@@ -213,17 +212,6 @@ class ShareCircleViewModel(private val repository: MyRepository) : ViewModel() {
         }
     }
 
-    fun apiUsage() {
-        viewModelScope.launch {
-            try {
-                val exchangeRates = Api.retrofitService.getExchangeRates()
-                Log.i("EXCHANGE_RATES", "apiUsage: ${exchangeRates.rates}")
-            } catch (e: Exception) {
-                Log.e("EXCHANGE_RATES", "Error fetching exchange rates", e)
-            }
-        }
-    }
-
     fun updateExpense(expenseId: String, amountValue: Double, title: String, selectedPayer: String) {
         viewModelScope.launch {
             val expense = repository.getExpenseById(expenseId)
@@ -258,6 +246,28 @@ class ShareCircleViewModel(private val repository: MyRepository) : ViewModel() {
 
             paymentInView(updatedPayment)
             calculateBalances()
+        }
+    }
+
+    fun initCurrencyConverterRates() {
+        viewModelScope.launch {
+            try {
+                val exchangeRates = Api.retrofitService.getExchangeRates()
+                _uiState.update { state -> state.copy(exchangeRates = exchangeRates.rates) }
+
+            } catch (e: Exception) {
+                Log.e("EXCHANGE_RATES", "Error fetching exchange rates", e)
+            }
+        }
+    }
+
+    fun convertCurrency(amount: String, fromCurrency: String, toCurrency: String) {
+        viewModelScope.launch {
+            val exchangeRates = Api.retrofitService.getExchangeRates(fromCurrency)
+            _uiState.update { state -> state.copy(exchangeRates = exchangeRates.rates) }
+            val exchangeRate = uiState.value.exchangeRates[toCurrency] ?: 0.0
+            val convertedAmount = amount.toDouble() * exchangeRate
+            _uiState.update { state -> state.copy(convertionResult = convertedAmount) }
         }
     }
 }
