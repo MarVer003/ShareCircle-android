@@ -45,4 +45,6 @@ interface MyRepository {
     suspend fun deleteExpenseDetail(expenseDetail: ExpenseDetailEntity)
     suspend fun deleteExpenseDetailsByExpenseId(expenseId: String)
 
+    fun closeDatabase()
+
 }

@@ -26,5 +26,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.closeDatabase()
+    }
 }
 

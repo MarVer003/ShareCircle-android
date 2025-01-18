@@ -29,6 +29,10 @@ class ShareCircleViewModel(private val repository: MyRepository) : ViewModel() {
         loadInitialData()
     }
 
+    fun closeDatabase() {
+        repository.closeDatabase()
+    }
+
     private fun loadInitialData() {
         viewModelScope.launch {
             val users = repository.getUsers()

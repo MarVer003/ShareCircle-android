@@ -157,4 +157,8 @@ class MyRepositoryImpl(
     override suspend fun deleteExpenseDetailsByExpenseId(expenseId: String) {
         expenseDetailDAO.deleteExpenseDetailsByExpenseId(expenseId)
     }
+
+    override fun closeDatabase() {
+        MyDatabase.close()
+    }
 }
